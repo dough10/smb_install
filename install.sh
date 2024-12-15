@@ -56,6 +56,13 @@ if [ $? -eq 0 ]; then
 
   echo "Share successfully added to /etc/fstab."
 
+  if [ -d "$HOME/Desktop" ]; then
+    echo -e "[Desktop Entry]\nVersion=1.0\nName=Mount Share\nExec=sudo mount /media/${folder}\nIcon=folder\nTerminal=true\nType=Application\nCategories=Utility;" | tee -a "$HOME/Desktop/mount_share.desktop" > /dev/null
+
+    chmod +x "$HOME/Desktop/mount_share.desktop"
+    echo "Mount share shortcut has been created on your Desktop."
+  fi
+
   echo "Do you want to restart now? (y/n): "
   read -r restart
   if [[ "$restart" =~ ^[yY]$ ]]; then
