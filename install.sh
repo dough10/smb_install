@@ -12,18 +12,19 @@ if [ "$auto" = "y" ] || [ "$auto" = "Y" ]; then
   sudo apt-get autoremove -y
 fi
 
-echo "Enter SMB Username: "
-read -r uname
-
-echo "Enter SMB Password: "
-stty -echo
-read -r pass
-stty echo
-echo
 
 credentials_file="$HOME/.smbcredentials"
 
 if [ ! -f "$credentials_file" ]; then
+  echo "Enter SMB Username: "
+  read -r uname
+
+  echo "Enter SMB Password: "
+  stty -echo
+  read -r pass
+  stty echo
+  echo
+
   echo "Creating .smbcredentials file..."
   echo "username=$uname" | tee -a "$credentials_file" > /dev/null
   echo "password=$pass" | tee -a "$credentials_file" > /dev/null
@@ -54,7 +55,13 @@ if [ $? -eq 0 ]; then
     read -r confirm_folder
   done
 
+  sudo mkdir -pv /media/$USER
+
+  sudo chown -R $USER:$USER /media/$USER
+
   mkdir -pv /media/$USER/$folder
+
+  sudo chown -R $USER:$USER /media/$USER/$folder
 
   echo "Adding share to /etc/fstab..."
   echo "${server} /media/$USER/$folder  cifs credentials=$HOME/.smbcredentials,uid=$USER,nofail 0 0" | sudo tee -a /etc/fstab > /dev/null
@@ -63,7 +70,6 @@ if [ $? -eq 0 ]; then
 
   if [ -d "$HOME/Desktop" ]; then
     echo "[Desktop Entry]\nVersion=1.0\nName=Mount Share\nExec=sudo mount /media/$USER/$folder \nIcon=folder\nTerminal=true\nType=Application\nCategories=Utility;" | tee -a "$HOME/Desktop/mount_share.desktop" > /dev/null
-
     chmod +x "$HOME/Desktop/mount_share.desktop"
     echo "Mount share shortcut has been created on your Desktop."
   fi
@@ -76,4 +82,5 @@ if [ $? -eq 0 ]; then
 else
   echo "Error: Unable to access the server $server. Please check the server address and try again."
   rm -v "$credentials_file"
+  exit 1
 fi
