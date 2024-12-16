@@ -12,7 +12,6 @@ if [ "$auto" = "y" ] || [ "$auto" = "Y" ]; then
   sudo apt-get autoremove -y
 fi
 
-
 credentials_file="$HOME/.smbcredentials"
 
 if [ ! -f "$credentials_file" ]; then
@@ -34,13 +33,13 @@ else
 fi
 
 echo "Enter file share address (e.g., //192.168.1.100/Music): "
-read -r server
+read -r network_share
 
-echo "Checking if the share $server is accessible..."
-smbclient -L "$server" -A "$credentials_file" > smbclient_output.txt 2>&1
+echo "Checking if the share $network_share is accessible..."
+smbclient -L "$network_share" -A "$credentials_file" > smbclient_output.txt 2>&1
 
 if [ $? -eq 0 ]; then
-  echo "Server $server is accessible. Proceeding."
+  echo "Share $network_share is accessible. Proceeding."
 
   echo "Enter the share folder name (e.g., 'nas'): "
   read -r folder
@@ -62,7 +61,7 @@ if [ $? -eq 0 ]; then
   sudo chown -R $USER:$USER /media/$USER/$folder
 
   echo "Adding share to /etc/fstab..."
-  echo "${server} /media/$USER/$folder cifs credentials=$HOME/.smbcredentials,uid=$USER,gid=$USER,nofail 0 0" | sudo tee -a /etc/fstab > /dev/null
+  echo "${network_share} /media/$USER/$folder cifs credentials=$HOME/.smbcredentials,uid=$USER,gid=$USER,nofail 0 0" | sudo tee -a /etc/fstab > /dev/null
 
   echo "Share successfully added to /etc/fstab."
 
@@ -78,7 +77,7 @@ if [ $? -eq 0 ]; then
     sudo reboot
   fi
 else
-  echo "Error: Unable to access the server $server. Please check the server address and try again."
+  echo "Error: Unable to access the share $network_share. Please check the share address and try again."
   rm -v "$credentials_file"
   exit 1
 fi
