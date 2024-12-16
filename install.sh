@@ -64,12 +64,12 @@ if [ $? -eq 0 ]; then
   sudo chown -R $USER:$USER /media/$USER/$folder
 
   echo "Adding share to /etc/fstab..."
-  echo "${server} /media/$USER/$folder  cifs credentials=$HOME/.smbcredentials,uid=$USER,nofail 0 0" | sudo tee -a /etc/fstab > /dev/null
+  echo "${server} /media/$USER/$folder cifs credentials=$HOME/.smbcredentials,uid=$USER,gid=$USER,nofail 0 0" | sudo tee -a /etc/fstab > /dev/null
 
   echo "Share successfully added to /etc/fstab."
 
   if [ -d "$HOME/Desktop" ]; then
-    echo "[Desktop Entry]\nVersion=1.0\nName=Mount Share\nExec=sudo mount /media/$USER/$folder \nIcon=folder\nTerminal=true\nType=Application\nCategories=Utility;" | tee -a "$HOME/Desktop/mount_share.desktop" > /dev/null
+    echo "[Desktop Entry]\nVersion=1.0\nName=Mount $folder\nExec=sudo mount /media/$USER/$folder \nIcon=folder\nTerminal=true\nType=Application\nCategories=Utility;" | tee -a "$HOME/Desktop/mount_share.desktop" > /dev/null
     chmod +x "$HOME/Desktop/mount_share.desktop"
     echo "Mount share shortcut has been created on your Desktop."
   fi
