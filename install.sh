@@ -55,12 +55,10 @@ if [ $? -eq 0 ]; then
     read -r confirm_folder
   done
 
+  echo "Creating folders and setting permissions"
   sudo mkdir -pv /media/$USER
-
   sudo chown -R $USER:$USER /media/$USER
-
   mkdir -pv /media/$USER/$folder
-
   sudo chown -R $USER:$USER /media/$USER/$folder
 
   echo "Adding share to /etc/fstab..."
