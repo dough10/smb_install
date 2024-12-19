@@ -55,20 +55,20 @@ if [ $? -eq 0 ]; then
   done
 
   echo "Creating folders and setting permissions"
-  sudo mkdir -pv /media/$USER
-  sudo chown -R $USER:$USER /media/$USER
-  mkdir -pv /media/$USER/$folder
-  sudo chown -R $USER:$USER /media/$USER/$folder
+  sudo mkdir -pv "/media/$USER"
+  sudo chown -R "$USER":"$USER" "/media/$USER"
+  mkdir -pv "/media/$USER/$folder"
+  sudo chown -R "$USER":"$USER" "/media/$USER/$folder"
 
   echo "Adding share to /etc/fstab..."
-  echo "${network_share} /media/$USER/$folder cifs credentials=$HOME/.smbcredentials,uid=$USER,gid=$USER,nofail 0 0" | sudo tee -a /etc/fstab > /dev/null
+  echo "${network_share} /media/${USER}/${folder} cifs credentials=${credentials_file},uid=${USER},gid=${USER},nofail 0 0" | sudo tee -a /etc/fstab > /dev/null
 
   echo "Share successfully added to /etc/fstab."
 
   if [ -d "$HOME/Desktop" ]; then
-    echo -e "[Desktop Entry]\nVersion=1.0\nName=Mount $folder\nExec=sudo mount /media/$USER/$folder\nIcon=folder\nTerminal=true\nType=Application\nCategories=Utility;" | tee -a "$HOME/Desktop/mount_share.desktop" > /dev/null
+    echo -e "[Desktop Entry]\n  Version=1.0\n  Name=Mount ${folder}\n  Exec=sudo mount /media/${USER}/${folder}\n  Icon=folder\n  Terminal=true\n  Type=Application\n  Categories=Utility;" | tee -a "${HOME}/Desktop/mount_share.desktop" > /dev/null
     chmod +x "$HOME/Desktop/mount_share.desktop"
-    echo "Mount share shortcut has been created on your Desktop."
+    echo "'Mount ${folder}' shortcut has been created on your Desktop."
   fi
 
   echo "Do you want to restart now? (y/n): "
@@ -77,7 +77,7 @@ if [ $? -eq 0 ]; then
     sudo reboot
   fi
 else
-  echo "Error: Unable to access the share $network_share. Please check the share address and try again."
+  echo "Error: Unable to access the share ${network_share}. Please check the share address and try again."
   rm -v "$credentials_file"
   exit 1
 fi
