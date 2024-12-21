@@ -62,7 +62,6 @@ if [ $? -eq 0 ]; then
 
   echo "Adding share to /etc/fstab..."
   echo "${network_share} /media/$USER/$folder cifs credentials=$HOME/.smbcredentials,uid=$USER,gid=$USER,nofail 0 0" | sudo tee -a /etc/fstab > /dev/null
-
   echo "Share successfully added to /etc/fstab."
 
   if [ -d "$HOME/Desktop" ]; then
@@ -71,13 +70,14 @@ if [ $? -eq 0 ]; then
     echo "Mount share shortcut has been created on your Desktop."
   fi
 
-  echo "Do you want to restart now? (y/n): "
+  echo "Restart now? (y/n): "
   read -r restart
   if [ "$restart" = "y" ] || [ "$restart" = "Y" ]; then
     sudo reboot
   fi
 else
-  echo "Error: Unable to access the share $network_share. Please check the share address and try again."
+  echo "Error: Unable to access the share $network_share. Please check the share address and credentials."
   rm -v "$credentials_file"
+  cat smbclient_output.txt
   exit 1
 fi
