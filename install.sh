@@ -35,7 +35,7 @@ fi
 echo "Enter file share address (e.g., //192.168.1.100/Music): "
 read -r network_share
 
-echo "Checking if the share $network_share is accessible..."
+echo "Checking if the share ${network_share} is accessible..."
 smbclient -L "$network_share" -A "$credentials_file" > smbclient_output.txt 2>&1
 
 if [ $? -eq 0 ]; then
