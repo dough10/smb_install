@@ -44,28 +44,28 @@ if [ $? -eq 0 ]; then
   echo "Enter the share folder name (e.g., 'nas'): "
   read -r folder
   
-  echo "Is /media/$USER/$folder the correct location? (y/n): "
+  echo "Is /mnt/$USER/$folder the correct location? (y/n): "
   read -r confirm_folder
 
   while [ "$confirm_folder" != "y" ] && [ "$confirm_folder" != "Y" ]; do
     echo "Please enter the correct share folder: "
     read -r folder
-    echo "Is /media/$USER/$folder the correct location? (y/n): "
+    echo "Is /mnt/$USER/$folder the correct location? (y/n): "
     read -r confirm_folder
   done
 
   echo "Creating folders and setting permissions"
-  sudo mkdir -pv "/media/$USER"
-  sudo chown -R "$USER":"$USER" "/media/$USER"
-  mkdir -pv "/media/$USER/$folder"
-  sudo chown -R "$USER":"$USER" "/media/$USER/$folder"
+  sudo mkdir -pv "/mnt/$USER"
+  sudo chown -R "$USER":"$USER" "/mnt/$USER"
+  mkdir -pv "/mnt/$USER/$folder"
+  sudo chown -R "$USER":"$USER" "/mnt/$USER/$folder"
 
   echo "Adding share to /etc/fstab..."
-  echo "${network_share} /media/${USER}/${folder} cifs credentials=${credentials_file},uid=${USER},gid=${USER},nofail 0 0" | sudo tee -a /etc/fstab > /dev/null
+  echo "${network_share} /mnt/${USER}/${folder} cifs credentials=${credentials_file},uid=${USER},gid=${USER},nofail 0 0" | sudo tee -a /etc/fstab > /dev/null
   echo "Share successfully added to /etc/fstab."
 
   if [ -d "$HOME/Desktop" ]; then
-    echo -e "[Desktop Entry]\n  Version=1.0\n  Name=Mount ${folder}\n  Exec=sudo mount /media/${USER}/${folder}\n  Icon=folder\n  Terminal=true\n  Type=Application\n  Categories=Utility;" | tee -a "${HOME}/Desktop/mount_share.desktop" > /dev/null
+    echo -e "[Desktop Entry]\n  Version=1.0\n  Name=Mount ${folder}\n  Exec=sudo mount /mnt/${USER}/${folder}\n  Icon=folder\n  Terminal=true\n  Type=Application\n  Categories=Utility;" | tee -a "${HOME}/Desktop/mount_share.desktop" > /dev/null
     chmod +x "$HOME/Desktop/mount_share.desktop"
     echo "'Mount ${folder}' shortcut has been created on your Desktop."
   fi
