@@ -39,7 +39,7 @@ echo "Enter file share address (e.g., //192.168.1.100/Music): "
 read -r network_share
 
 # Validate format
-if [[ ! "$network_share" =~ ^//[^/]+/[^/]+$ ]]; then
+if [[ ! "$network_share" =~ ^//[^/]+/.+ ]]; then
   echo "Invalid format. Use //host/share"
   exit 1
 fi
